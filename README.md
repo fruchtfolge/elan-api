@@ -2,6 +2,9 @@
 Provides cropping data and geometries for the plots of a single farm through the agricultural direct aid program.
 The API is a (scraping) wrapper for the InVeKos `download-portal` of the [Landwirtschaftskammer Nordrhein-Westfalen](https://www.landwirtschaftskammer.de/).
 
+## Installation
+`npm install elan-api`
+
 ## Usage example
 ```js
 const elanGet = require('elan-api')
