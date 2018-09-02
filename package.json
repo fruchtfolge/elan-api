@@ -1,0 +1,30 @@
+{
+  "name": "elan-api",
+  "version": "0.0.1",
+  "description": "An API wrapper for the NRW InVeKos download portal",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "jasmine"
+  },
+  "keywords": [
+    "InVeKos",
+    "NRW",
+    "ELAN",
+    "EU",
+    "Subsidy"
+  ],
+  "author": "Christoph Pahmeyer <christoph.pahmeyer@uni-bonn.de>",
+  "license": "MIT",
+  "dependencies": {
+    "fs-extra": "^7.0.0",
+    "osmosis": "^1.1.8",
+    "request": "^2.88.0",
+    "unzip": "^0.1.11"
+  },
+  "devDependencies": {
+    "jasmine": "^3.2.0"
+  }
+}
