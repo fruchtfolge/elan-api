@@ -32,7 +32,7 @@ The module exports one method. It takes the following arguments:
 
 ## Testing
 In order to test, you need to place a `credentials.json` file in the spec folder.
-The JSON needs to have the following structure, where you need replace the dummy values with a valid farmNo and password:
+The JSON needs to have the following structure, where the dummy values have to be replaced with a valid farmNo and password:
 
 ```json
 {
