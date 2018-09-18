@@ -22,7 +22,7 @@ function getInvekos(farmno, pass, options) {
     }
     osmosis
     .get('https://www.lwk-verfahren.de/DownloadPortal/pages/index.action')
-  	.post('https://www.lwk-verfahren.de/DownloadPortal/pages/j_security_check', {'j_username': farmno, 'j_password': pass, 'submitButton': 'Login'})
+  	.post('https://www.lwk-verfahren.de/DownloadPortal/pages/j_security_check', {'j_username': '276' + farmno, 'j_password': pass, 'submitButton': 'Login'})
   	.then((context) => {
       const filename = `${options.type}_${farmno}_${options.year}.zip`
   		const download = {
@@ -32,31 +32,40 @@ function getInvekos(farmno, pass, options) {
   		  }
   		}
   		const stream = request(download).pipe(fs.createWriteStream(filename))
-
+      const rand = Math.random().toString(36).substring(7)
+      
   		stream.on('finish', () => {
-        fs.mkdir(farmno)
+        fs.mkdir(rand)
         .then(() => {
           let result
-          const zip = fs.createReadStream(filename).pipe(unzip.Extract({ path: farmno }))
-
-          zip.on('close', () => {
+          fs.createReadStream(filename)
+          .pipe(unzip.Extract({ path: rand }))
+          .on('close', () => {
             let file = 'Flächenverzeichnis.xml'
-    				if (options.type == 'geometries') {
-    					file = 'Teilschlaggeometrien.xml'
+    				if (options.type == 'Geometrien') {
+    					file = 'Teilschlaggeometrien.gml'
     				}
 
-            fs.readFile(farmno + '/' + file, 'utf-8')
+            fs.readFile(rand + '/' + file, 'utf-8')
             .then(content => { result = content })
-            .then(fs.unlink(farmno + '/' + file))
-            .then(fs.rmdir(farmno))
+            .then(fs.unlink(rand + '/' + file))
+            .then(fs.rmdir(rand))
             .then(fs.unlink(filename))
             .then(() => { return resolve(result) })
             .catch(err => { return reject(err) })
     			})
-
-          stream.on('error',err => { return reject(err) })
+          .on('error', (err) => {
+            fs.unlink(rand + '/' + file)
+            .then(fs.rmdir(rand))
+            .then(fs.unlink(filename))
+            .then(() => resolve(err))
+            .catch(() => resolve(err))
+          })
         })
   		})
+
+      stream.on('error',err => { return reject(err) })
+
   	})
   	.error(err => { return reject(err) })
   })

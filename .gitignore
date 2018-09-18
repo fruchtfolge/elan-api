@@ -1,3 +1,5 @@
 node_modules
 package-lock.json
-spec/credentials.json
+test/credentials.json
+test/verzeichnis.json
+test/geometries.json
