@@ -1,6 +1,6 @@
 {
   "name": "elan-api",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "An API wrapper for the NRW InVeKos download portal",
   "main": "index.js",
   "directories": {
