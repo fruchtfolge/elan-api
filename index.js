@@ -1,6 +1,9 @@
-const fs = require('fs-extra')
+const fs = require('fs')
 const osmosis = require('osmosis')
-const request = require('request')
+const utils = require('./src/utils')
+const getCookie = require('./src/cookie')
+const download = require('./src/download')
+const readUnzip = require('./src/readUnzip');
 const unzip = require('unzip')
 
 function getLatestElanYear() {
@@ -13,62 +16,37 @@ function getLatestElanYear() {
   else return (year-1).toString()
 }
 
-function getInvekos(farmno, pass, options) {
-  return new Promise((resolve, reject) => {
-    if (!farmno || !pass) return reject('No credentials provided')
-    else if (!options && options.year) {
-      options = options || {}
-      options.year = getLatestElanYear()
-    }
-    osmosis
-    .get('https://www.lwk-verfahren.de/DownloadPortal/pages/index.action')
-  	.post('https://www.lwk-verfahren.de/DownloadPortal/pages/j_security_check', {'j_username': '276' + farmno, 'j_password': pass, 'submitButton': 'Login'})
-  	.then((context) => {
-      const filename = `${options.type}_${farmno}_${options.year}.zip`
-  		const download = {
-  		  url: `https://www.lwk-verfahren.de/DownloadPortal/pages/loadFile.action?filename=${filename}`,
-  		  headers: {
-  		    'cookie': context.request.headers['cookie']
-  		  }
-  		}
-  		const stream = request(download).pipe(fs.createWriteStream(filename))
-      const rand = Math.random().toString(36).substring(7)
-      
-  		stream.on('finish', () => {
-        fs.mkdir(rand)
-        .then(() => {
-          let result
-          fs.createReadStream(filename)
-          .pipe(unzip.Extract({ path: rand }))
-          .on('close', () => {
-            let file = 'Flächenverzeichnis.xml'
-    				if (options.type == 'Geometrien') {
-    					file = 'Teilschlaggeometrien.gml'
-    				}
+module.exports = async function getInvekos(farmno, pass, options) {
+  if (!farmno || !pass) throw new Error('No credentials provided')
+  options = options || {}
+  options.year = options.year ||getLatestElanYear()
+  options.type = options.type ||'Flächenverzeichnis'
+  
+  let file = 'Flächenverzeichnis.xml'
+  if (options.type == 'Geometrien') {
+    file = 'Teilschlaggeometrien.gml'
+  }
+  
+  const filename = `${options.type}_${farmno}_${options.year}.zip`
+  const rand = Math.random().toString(36).substring(7)
+  
+  try {
+    // create temp folder
+    await utils.mkdir(rand)
+    // login into ELAN Download Portal and save cookie
+    const cookie = await getCookie(farmno, pass)
+    // download file into folder
+    await download(cookie, rand, filename)
+    // read .zip file and unzip
+    await readUnzip(rand, filename, file)
+    // read extracted file
+    const results = await utils.readFile(path.join(dest,file))
+    // delete .xml / .gml / .zip file
+    
+  } catch (e) {
+    await utils.rmdir(rand)
+    throw new Error(e)
+  }
 
-            fs.readFile(rand + '/' + file, 'utf-8')
-            .then(content => { result = content })
-            .then(fs.unlink(rand + '/' + file))
-            .then(fs.rmdir(rand))
-            .then(fs.unlink(filename))
-            .then(() => { return resolve(result) })
-            .catch(err => { return reject(err) })
-    			})
-          .on('error', (err) => {
-            fs.unlink(rand + '/' + file)
-            .then(fs.rmdir(rand))
-            .then(fs.unlink(filename))
-            .then(() => resolve(err))
-            .catch(() => resolve(err))
-          })
-        })
-  		})
-
-      stream.on('error',err => { return reject(err) })
-
-  	})
-  	.error(err => { return reject(err) })
-  })
+  return 'fertig'
 }
-
-module.exports = getInvekos

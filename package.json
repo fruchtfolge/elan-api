@@ -7,7 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "jasmine"
+    "test": "node test/test.js"
   },
   "keywords": [
     "InVeKos",
