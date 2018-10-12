@@ -26,6 +26,7 @@ module.exports = function download(cookie, dest, filename) {
       response.pipe(file)
   
       file.on('finish', () => {
+        console.log('fertig')
         file.close(resolve)
       })
     })

@@ -3,7 +3,7 @@ const osmosis = require('osmosis')
 const utils = require('./src/utils')
 const getCookie = require('./src/cookie')
 const download = require('./src/download')
-const readUnzip = require('./src/readUnzip');
+const readUnzip = require('./src/unzip');
 const unzip = require('unzip')
 
 function getLatestElanYear() {
@@ -42,7 +42,12 @@ module.exports = async function getInvekos(farmno, pass, options) {
     // read extracted file
     const results = await utils.readFile(path.join(dest,file))
     // delete .xml / .gml / .zip file
+    await utils.unlink(path.join(dest,file))
+    await utils.unlink(path.join(dest,filename))
+    await utils.rmdir(rand)
     
+    
+    return results
   } catch (e) {
     await utils.rmdir(rand)
     throw new Error(e)
