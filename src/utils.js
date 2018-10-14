@@ -19,7 +19,7 @@ module.exports = {
   },
   readFile(path) {
     return new Promise((resolve, reject) => {
-      fs.readFile(path, (err, data) => {
+      fs.readFile(path, 'utf8', (err, data) => {
         if (err) return reject(err)
         return resolve(data)
       })

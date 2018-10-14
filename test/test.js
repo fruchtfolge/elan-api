@@ -29,12 +29,11 @@ elanGet(credentials.farmno, credentials.pass, {
 })
 */
 elanGet(credentials.farmno, credentials.pass, {
-  type: 'Verzeichnis',
   year: '2018'
 })
-.then(res => {
-  console.log(res)
-})
-.catch(err => {
-  console.log(err)
-})
+  .then(res => {
+    console.log(res)
+  })
+  .catch(err => {
+    console.log(err)
+  })
