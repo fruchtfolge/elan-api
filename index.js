@@ -1,4 +1,3 @@
-const fs = require('fs')
 const path = require('path')
 const utils = require('./src/utils')
 const getCookie = require('./src/cookie')
@@ -26,7 +25,6 @@ module.exports = async function getInvekos(farmno, pass, options) {
     file = 'Teilschlaggeometrien.gml'
   }
 
-  console.log(options)
   const filename = `${options.type}_${farmno}_${options.year}.zip`
   const rand = Math.random().toString(36).substring(7)
 
@@ -46,16 +44,8 @@ module.exports = async function getInvekos(farmno, pass, options) {
     await utils.unlink(path.join(rand, filename))
     await utils.rmdir(rand)
 
-
     return results
   } catch (e) {
-    try {
-      await utils.rmdir(rand)
-    } catch (err) {
-      console.log(err)
-    } finally {
-      throw new Error(e)
-    }
-
+    throw new Error(e)
   }
 }
