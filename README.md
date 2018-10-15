@@ -12,7 +12,7 @@ npm install elan-api
 const elanGet = require('elan-api')
 
 elanGet('farmNo', 'password', {
-  type: 'plots',
+  type: 'Verzeichnis',
   year: '2018'
 })
 .then(res => {
