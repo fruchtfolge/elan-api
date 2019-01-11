@@ -18,7 +18,8 @@ module.exports = async function getInvekos(farmno, pass, options) {
   options.year = options.year || getLatestElanYear()
   options.type = options.type ||'Verzeichnis'
 
-  const filename = `${options.type}_${farmno}_${options.year}.zip`
+  let filename = `${options.type}_${farmno}_${options.year}.zip`
+  if (options.year === 2016) filename = `${options.type}_${farmno}.zip`
 
   try {
     // login into ELAN Download Portal and save cookie

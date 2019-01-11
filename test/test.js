@@ -27,5 +27,17 @@ elanGet(credentials.farmno, credentials.pass, {
     throw new Error(err)
   })
 
+/*
+  // Should return error, as credentials are missing
+elanGet(undefined, credentials.pass, {
+  type: 'Geometrien',
+  year: '2018'
+})
+  .then(() => {
+    //
+  })
+  .catch(err => {
+    assert.throws(elanGet(), 'No credentials provided')
+  })
 // should throw 'no credentials' error
-//assert.throws(elanGet(), 'No credentials provided')
+*/
