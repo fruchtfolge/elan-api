@@ -1,24 +1,25 @@
-const unzip = require('unzip')
-const fs = require('fs')
-const utils = require('./utils')
-const path = require('path')
+const yauzl = require('yauzl')
 
-module.exports = function readUnzip(dest, filename) {
+module.exports = function unzip(zip) {
   return new Promise((resolve, reject) => {
-    fs.createReadStream(path.join(dest,filename))
-      .pipe(unzip.Extract({ path: dest }))
-      .on('close', () => {
-        resolve()
+    yauzl.fromBuffer(zip,{lazyEntries: true}, (err, content) => {
+      if (err) return reject(err)
+      content.readEntry()
+      content.on('entry', entry => {
+        content.openReadStream(entry, (err, readStream) => {
+          if (err) return reject(err)
+          let res = []
+          readStream.on('end', () => {
+            return resolve(res.join(''))
+          })
+          readStream.on('data', (chunk) => {
+            res.push(chunk.toString())
+          })
+          readStream.on('err', (e) => {
+            return reject(e)
+          })
+        })
       })
-      .on('error', async (err) => {
-        try {
-          await utils.unlink(path.join(dest, filename))
-          await utils.rmdir(dest)
-        } catch (e) {
-          reject(new Error(e))
-        }
-        reject(new Error(err))
-      })
-  })
-
+    })
+  })    
 }
