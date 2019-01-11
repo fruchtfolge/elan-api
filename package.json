@@ -19,9 +19,8 @@
   "author": "Christoph Pahmeyer <christoph.pahmeyer@uni-bonn.de>",
   "license": "MIT",
   "dependencies": {
-    "fs-extra": "^7.0.0",
     "osmosis": "^1.1.8",
     "request": "^2.88.0",
-    "unzip": "^0.1.11"
+    "yauzl": "^2.10.0"
   }
 }

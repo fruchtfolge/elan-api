@@ -14,6 +14,7 @@ elanGet(credentials.farmno, credentials.pass)
     throw new Error(err)
   })
 
+
 // Should return 'Geometrien' for 2018
 elanGet(credentials.farmno, credentials.pass, {
   type: 'Geometrien',
