@@ -19,7 +19,8 @@
   "author": "Christoph Pahmeyer <christoph.pahmeyer@uni-bonn.de>",
   "license": "MIT",
   "dependencies": {
-    "osmosis": "^1.1.8",
+    "latest": "^0.2.0",
+    "osmosis": "^1.1.10",
     "request": "^2.88.0",
     "yauzl": "^2.10.0"
   }
